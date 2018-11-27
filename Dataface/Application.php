@@ -1362,6 +1362,8 @@ END
 				$this->currentRecord = df_get_record($query['-table'], $q);
 			} else if ( isset($_REQUEST['--recordid']) ){
 				$this->currentRecord = df_get_record_by_id($_REQUEST['--recordid']);
+			} else if ( isset($_REQUEST['--record_id']) ){
+				$this->currentRecord = df_get_record_by_id($_REQUEST['--record_id']);
 			} else if ( isset($_REQUEST['-recordid']) ){
 				$this->currentRecord = df_get_record_by_id($_REQUEST['-recordid']);
 			} else {
