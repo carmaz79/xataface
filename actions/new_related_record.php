@@ -20,7 +20,11 @@ class dataface_actions_new_related_record {
 
 
 		$record = null;	// we let the Form automatically handle loading of record.
-		$form = new Dataface_ShortRelatedRecordForm($record, $query['-relationship']);
+		$includedFields = null; // Null for all fields
+		if ( @$query['-fields'] ){
+			$includedFields = explode(' ', $query['-fields']);//In relationships fields would be tablename.fieldname
+		}
+		$form = new Dataface_ShortRelatedRecordForm($record, $query['-relationship'],null, $includedFields);
 
 		$form->_build();
 		
