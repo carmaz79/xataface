@@ -1897,7 +1897,7 @@ class Dataface_Record {
 								$ptable =& $rrecord->_relationship->getTable($row_field);
 								$precord =& $rrecord->toRecord($ptable->tablename);
 								if ( !$precord or PEAR::isError($precord) ) continue;
-								$row['__permissions__'][$row_field] = $precord->getPermissions(array('field'=>$row_field));
+								$row['__permissions__'][$row_field] = $precord->getPermissions(array('relationship'=>$transientFields[$fieldname]['relationship'],'field'=>$row_field));
 								if ( isset($relKeys[$row_field]) ) unset($row['__permissions__'][$row_field]['edit']);
 								unset($precord);
 								unset($ptable);
