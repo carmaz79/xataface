@@ -1,4 +1,6 @@
 <?php
+require_once(DATAFACE_PATH.'/__custom_functions/custom_functions.php');
+use function SymbiontFunctions\functionsDefinition\parse_ini_file;
 /*-------------------------------------------------------------------------------
  * Xataface Web Application Framework
  * Copyright (C) 2005-2008 Web Lite Solutions Corp (shannah@sfu.ca)
@@ -722,7 +724,7 @@ END;
                 $configPath = DATAFACE_SITE_PATH.'/conf.ini';
             }
     		if ( is_readable($configPath) ){
-    			$conf = array_merge(parse_ini_file($configPath, true), $conf);
+    			$conf = array_replace_recursive(parse_ini_file($configPath, true), $conf);
     			if ( @$conf['__include__'] ){
     				$includes = array_map('trim',explode(',', $conf['__include__']));
     				foreach ($includes as $i){
@@ -752,9 +754,9 @@ END;
                         }
                         
     					if ( is_readable($i) ){
-    						$conf = array_merge($conf, parse_ini_file($i, true));
+    						$conf = array_replace_recursive($conf, parse_ini_file($i, true));
     					} else if ( is_readable($i.'.php') ){
-    						$conf = array_merge($conf, parse_ini_file($i.'.php', true));
+    						$conf = array_replace_recursive($conf, parse_ini_file($i.'.php', true));
     					} else if (!$optional) {
     					    throw new Exception("Include directive $i not satisifed.  Cannot find the file $i");
     					}
@@ -3576,7 +3578,7 @@ END
 			$authTool = $this->getAuthenticationTool();
 
 			$auth_result = $authTool->authenticate();
-
+			
 			if ( PEAR::isError($auth_result) and $auth_result->getCode() == DATAFACE_E_LOGIN_FAILURE ){
 				// There was a login failure, show the login prompt
 				$loginPrompt = true;

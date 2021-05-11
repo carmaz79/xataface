@@ -795,7 +795,6 @@ class Dataface_QueryBuilder {
 			}
 			$where .= ' OR ';
 
-
 		}
 		$where = substr($where, 0, strlen($where)-4);
 		if ( count($words) > 1){
@@ -931,7 +930,6 @@ class Dataface_QueryBuilder {
 			$rquery[$relationship][] = $rfield;
 
 		}
-
 		foreach ( $rquery as $rname=>$rfields){
 			$r =& $this->_table->getRelationship($rname);
 			if ( PEAR::isError($r) ){
@@ -956,16 +954,38 @@ class Dataface_QueryBuilder {
 			}
 
 			$sql = $r->getSQL();
-
 			$fkeys = $r->getForeignKeyValues();
+			if ($r->isOneToMany()) {
+				$sql = 'SELECT '.($r->_schema['parsed_sql']['where_clause']['arg_1']['value']).' FROM '.(explode('from ',$sql)[1]);
+			}
+			else {
+				$dtable = $r->getDomainTable();
+				foreach ($fkeys as $k => $fkey) {
+					if ($k != $dtable) {
+						foreach ($fkey as $f => $fv) {
+							if (strpos($fv,'$') !== false) {
+								$select_field = $k.'.'.$f;
+							}
+						}
+					}
+				}
+				$sql = 'SELECT '.$select_field.' FROM '.(explode('from ',$sql)[1]);
+			}
+            
+            $in_keys = [];
 			foreach ( $fkeys as $tname=>$tfields ){
-				foreach ( $tfields as $tval ){
+                foreach ( $tfields as $tval ){
+					if (stripos($tval,'$') !== false) {
+						if ( strlen($tval) > 0 ) $tnval = substr($tval,1);
+						$in_keys[] = $this->_table->tablename.'.'.$tnval;
+					}
 					if ( !is_scalar($tval) ) continue;
 					if ( strlen($tval) > 0 ) $tval = substr($tval,1);
 					$sql = preg_replace('/[\'"]?\$('.preg_quote($tval).')[\'"]?/', '`'.str_replace('`','',$this->_table->tablename).'`.`\1`', $sql);
-				}
+                }
 			}
-			$where .= 'EXISTS ('.$sql.$subwhere.') AND ';
+			$where .= implode(',',$in_keys).' IN ('.$sql.$subwhere.') AND ';
+
 			$use_where = true;
 			unset($r);
 			unset($fkeys);

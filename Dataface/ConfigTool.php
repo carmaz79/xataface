@@ -1,4 +1,6 @@
 <?php
+require_once(DATAFACE_PATH.'/__custom_functions/custom_functions.php');
+use function SymbiontFunctions\functionsDefinition\parse_ini_file;
 /*-------------------------------------------------------------------------------
  * Xataface Web Application Framework
  * Copyright (C) 2005-2008 Web Lite Solutions Corp (shannah@sfu.ca)
