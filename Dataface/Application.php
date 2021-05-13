@@ -3305,7 +3305,7 @@ END
 
 		$delegate = $table->getDelegate();
 		$handled = false;
-		if ( method_exists($delegate,'handleRequest') ){
+		if ($delegate and method_exists($delegate,'handleRequest') ){
             try {
                 $result = $delegate->handleRequest();
             } catch (xf\core\XFException $ex) {

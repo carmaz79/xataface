@@ -2569,7 +2569,7 @@ class Dataface_Table {
 		// First we will see if the delegate class defines as custom description.
 		$delegate =& $this->getDelegate();
 		$delegate_property_name = str_replace(':', '_', $propertyName);
-		if ( method_exists($delegate, $fieldname.'__'.$delegate_property_name) ){
+		if ($delegate and  method_exists($delegate, $fieldname.'__'.$delegate_property_name) ){
 
 			if ( !isset( $params['record'] ) ) $params['record'] = null;
 			$methodname = $fieldname.'__'.$delegate_property_name;
